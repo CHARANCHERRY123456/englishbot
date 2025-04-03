@@ -1,21 +1,19 @@
-import requests
-from config import settings
-from db import conversations_collection
+from fastapi import FastAPI, HTTPException
+from google import genai
+from config import settings  # Ensure this contains GEMINI_API_KEY
 
-# currently doing it with gemini api key 
-def process_message(message:str,username:str):
-    url="https://api.gemini.google.com/v1/completions"
-    headers={
-        "Autherization" : f"Bearer {settings.GEMINI_API_KEY}"
-    }
-    payload = {
-        "prompt": f"Correct the grammar and optimize this sentence: {message}",
-        "max_tokens": 100
-    }
+app = FastAPI()
+# client = genai.Client(settings.GEMINI_API_KEY)
+client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
+@app.post("/correct-grammar/")
+def process_message(message: str):
     try:
-        response = requests.post(url,json=payload,headers=headers)
-        response.raise_for_status()
-        corrected_message = response.json().get("choices", )
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=["whaat are you doing","can you please optimise and correct the grammer in this and just give the simple one line answer"])
+        return response.text
     except Exception as e:
-        pass
+        print(e)
+        return "Sorry someting happend in the internal sever"
+

@@ -1,41 +1,23 @@
-from jose import JOSEError, jwt
-from passlib.context import CryptContext
-from datetime import datetime, timedelta
+from fastapi import APIRouter, HTTPException
+from models.user import UserLogin, Token
+from services.auth import authenticate_user, create_access_token, get_password_hash
+from db import users_collection
 
-# Secret Key and Algorithm
-SECRET_KEY = "Thisisnotaverynotbigtoken"
-ALGORITHM = "HS256"
+router = APIRouter()
 
-# Password Hashing
-pwd_content = CryptContext(schemes=["bcrypt"], deprecated="auto")
+@router.post("/login", response_model=Token)
+async def login(user: UserLogin):
+    authenticated_user = authenticate_user(user.username, user.password)
+    if not authenticated_user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    access_token = create_access_token(data={"sub": user.username})
+    return {"access_token": access_token, "token_type": "bearer"}
 
-# Dummy User Database
-fake_users_db = {
-    "charan": {
-        "username": "charan",
-        "hashed_password": pwd_content.hash("charan")
-    }
-}
-
-# Verify password
-def verify_password(plain_pwd, hashed_pwd):
-    return pwd_content.verify(plain_pwd, hashed_pwd)
-
-def get_users_data(token:str):
-    return jwt.decode(token=token ,key=SECRET_KEY)
-
-# Create JWT Access Token
-def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=30)):
-    to_encode = data.copy()
-    expire = datetime.utcnow() + expires_delta
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
-# Authenticate User
-def authenticate_user(username: str, password: str):
-    user = fake_users_db.get(username)
-    if not user:
-        return False
-    if not verify_password(password, user["hashed_password"]):
-        return False
-    return user
+@router.post("/register")
+async def register(user: UserLogin):
+    if users_collection.find_one({"username": user.username}):
+        raise HTTPException(status_code=400, detail="Username already exists")
+    hashed_password = get_password_hash(user.password)
+    user_dict = {"username": user.username, "hashed_password": hashed_password}
+    users_collection.insert_one(user_dict)
+    return {"message": "User registered successfully"}

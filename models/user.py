@@ -1,13 +1,13 @@
 from pydantic import BaseModel
 
-# login schema
+# Login schema
 class UserLogin(BaseModel):
-    username : str
-    password : str
+    username: str
+    password: str
 
 class Token(BaseModel):
-    access_token :str
-    token_type : str
+    access_token: str
+    token_type: str
 
 class ChatInput(BaseModel):
-    message : str
+    message: str

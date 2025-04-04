@@ -11,7 +11,7 @@ def process_message(message: str):
     try:
         response = client.models.generate_content(
             model="gemini-2.0-flash",
-            contents=["whaat are you doing","can you please optimise and correct the grammer in this and just give the simple one line answer"])
+            contents=[message,"can you please optimise and correct the grammer in this and just give the simple one line answer"])
         return response.text
     except Exception as e:
         print(e)

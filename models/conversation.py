@@ -8,5 +8,5 @@ class Conversation(BaseModel):
     created_at: str
     messages: List[Message] = []
     
-    class Config:
-        orm_mode = True
+class Config:
+    from_attributes = True

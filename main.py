@@ -26,6 +26,7 @@ app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(conversation_router, prefix="/conversation", tags=["Conversations"])
 app.include_router(message_router, prefix="/message", tags=["Messages"])
 
+# app configuration
 
 
 @app.get("/")

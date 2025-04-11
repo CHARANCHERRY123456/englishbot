@@ -5,8 +5,7 @@ from .message import Message
 class Conversation(BaseModel):
     id: str
     user_id: str
+    title: str
+    type: str
     created_at: str
-    messages: List[Message] = []
-    
-class Config:
-    from_attributes = True
+    messages: List[Message]

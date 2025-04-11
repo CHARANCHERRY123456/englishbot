@@ -12,9 +12,29 @@ from services.chatbot_service import ChatbotService
 router = APIRouter()
 chatbot_service = ChatbotService()
 
+@router.post("/start", response_model=Conversation)
+async def start_conversation(user_id: str, type: str = "lifelong"):
+    db = await get_db()
+    now = datetime.now().isoformat()
+    title = "Lifelong Chat" if type == "lifelong" else f"Daily Chat | {now[:10]}"
+
+    new_conv = {
+        "user_id": user_id,
+        "title": title,
+        "type": type,
+        "created_at": now,
+        "messages": []
+    }
+
+    result = await db.conversations.insert_one(new_conv)
+    new_conv["id"] = str(result.inserted_id)
+    return new_conv
+
+
 @router.post("/conversations/", response_model=Conversation)
 async def create_conversation(user_id: str):
     try:
+        print("Arey bor i am in the precipus commit")
         db =await get_db()
         conversation = {
             "user_id": user_id,
@@ -25,6 +45,7 @@ async def create_conversation(user_id: str):
         conversation["id"] = str(conversation_id)  # ✅ Add id
         return conversation
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/conversations/{user_id}", response_model=List[Conversation])

@@ -1,17 +1,14 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
 
-class MessageBase(BaseModel):
+class MessageCreate(BaseModel):
     content: str
+    correct_grammar: Optional[bool] = False
 
-class MessageCreate(MessageBase):
-    correct_grammar: bool = True
-
-class Message(MessageBase):
+class Message(BaseModel):
     id: str
+    content: str
     sender: str
     timestamp: str
-    
-    class Config:
-        from_attributes = True
+    correction: Optional[str] = None
+    rating: Optional[int] = None

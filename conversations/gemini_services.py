@@ -20,7 +20,10 @@ class GeminiService:
             "1. Correct grammar.",
             "2. Suggest a better version.",
             "3. Rate fluency (out of 10).",
-            "4. Reply naturally like a native speaker."
+            "4. Reply naturally like a native speaker.",
+            "i want you to give the reponse in a dictinory format just like having keys reply , corrections , grammar_score",
+            "i want to include mainly these fields if you want you can add any keys you want",
+            "if want to give in a string format then make it to able to convert to dict"
         ])
 
     def send(self, user_input: str, history: List[str]) -> dict:

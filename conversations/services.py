@@ -1,5 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
+from fastapi import HTTPException
 from .schemas import *
 from conversations.model import MessageModel, ConversationModel
 from conversations.gemini_services import GeminiService
@@ -23,47 +24,51 @@ class ConversationService:
         return convo_dict
 
     async def add_message(self, conv_id: str, msg: MessageCreate):
-        history_cursor = self.messages.find(
-            {"conversation_id": conv_id},
-            sort=[("timestamp", -1)],
-            limit=5
-        )
-        history = [doc async for doc in history_cursor]
-        history_texts = [m["content"] for m in reversed(history)]
+        try:
+            history_cursor = self.messages.find(
+                {"conversation_id": conv_id},
+                sort=[("timestamp", -1)],
+                limit=5
+            )
+            history = [doc async for doc in history_cursor]
+            history_texts = [m["content"] for m in reversed(history)]
 
-        ai_result = self.gemini.send(msg.content, history_texts)
-        import json
-        with open("response.json", "w") as f:
-            json.dump(ai_result, f, indent=4)
+            ai_result = self.gemini.send(msg.content, history_texts)
+            print(ai_result)
+            import json
+            with open("response.json", "w") as f:
+                json.dump(ai_result, f, indent=4)
+            msg_doc = MessageModel(
+                **msg.dict(),
+                conversation_id=conv_id,
+                corrections=[{
+                    "original": msg.content,
+                    "suggestion": ai_result["reply"]
+                }],
+                grammar_score=ai_result["rating"],
+                rating=ai_result["rating"],
+            ).dict()
 
-        print(ai_result)
-        msg_doc = MessageModel(
-            **msg.dict(),
-            conversation_id=conv_id,
-            corrections=[{
-                "original": msg.content,
-                "suggestion": ai_result["reply"]
-            }],
-            grammar_score=ai_result["rating"],
-            rating=ai_result["rating"],
-        ).dict()
+            insert = await self.messages.insert_one(msg_doc)
+            await self.conversations.update_one(
+                {"_id": ObjectId(conv_id)},
+                {"$set": {"last_message_at": msg_doc["timestamp"]}}
+            )
 
-        insert = await self.messages.insert_one(msg_doc)
-        await self.conversations.update_one(
-            {"_id": ObjectId(conv_id)},
-            {"$set": {"last_message_at": msg_doc["timestamp"]}}
-        )
+            bot_reply = MessageModel(
+                content=ai_result["reply"],
+                sender_id="bot",
+                conversation_id=conv_id
+            ).dict()
 
-        bot_reply = MessageModel(
-            content=ai_result["reply"],
-            sender_id="bot",
-            conversation_id=conv_id
-        ).dict()
+            await self.messages.insert_one(bot_reply)
 
-        await self.messages.insert_one(bot_reply)
+            msg_doc["_id"] = str(insert.inserted_id)
+            return msg_doc
+        except Exception as e:
+            print(e)
+            raise HTTPException(status_code=400, detail="Invalid input data")
 
-        msg_doc["_id"] = str(insert.inserted_id)
-        return msg_doc
 
     async def get_conversation_history(self, conv_id: str, limit: int = 20, offset: int = 0):
         cursor = self.messages.find({"conversation_id": conv_id}).skip(offset).limit(limit).sort("timestamp", 1)

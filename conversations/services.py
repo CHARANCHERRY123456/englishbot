@@ -32,12 +32,17 @@ class ConversationService:
         history_texts = [m["content"] for m in reversed(history)]
 
         ai_result = self.gemini.send(msg.content, history_texts)
+        import json
+        with open("response.json", "w") as f:
+            json.dump(ai_result, f, indent=4)
+
+        print(ai_result)
         msg_doc = MessageModel(
             **msg.dict(),
             conversation_id=conv_id,
             corrections=[{
                 "original": msg.content,
-                "suggestion": ai_result["suggestion"]
+                "suggestion": ai_result["reply"]
             }],
             grammar_score=ai_result["rating"],
             rating=ai_result["rating"],
@@ -62,6 +67,7 @@ class ConversationService:
 
     async def get_conversation_history(self, conv_id: str, limit: int = 20, offset: int = 0):
         cursor = self.messages.find({"conversation_id": conv_id}).skip(offset).limit(limit).sort("timestamp", 1)
+        print(len(cursor))
         return [self._serialize(doc) async for doc in cursor]
 
     def _serialize(self, doc):

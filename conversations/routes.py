@@ -18,7 +18,6 @@ async def create_conversation(data: ConversationCreate, service: ConversationSer
 @router.post("/{conversation_id}/messages", response_model=MessageOut)
 async def send_message(conversation_id: str, msg: MessageCreate, service: ConversationService = Depends(get_service)):
     try:
-        print("Electrict person is here")
         return await service.add_message(conversation_id, msg)
     except Exception as e:
         raise HTTPException(500, detail=str(e))

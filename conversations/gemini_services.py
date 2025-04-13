@@ -13,15 +13,22 @@ class GeminiService:
             raise HTTPException(status_code=500, detail=f"Gemini init failed: {str(e)}")
 
     def build_prompt(self, user_input: str, history: List[str]) -> str:
+        # Join previous history as a string, ensuring format consistency
+        history_str = ''.join(history)
+        
+        # Build the prompt with a clear structure and example-based instructions
         return "\n".join([
-            f"Previous Messages:\n{''.join(history)}",
+            f"Previous Messages:\n{history_str}",
             f"User: {user_input}",
             "Tasks:",
-            "'reply' : 'your simple reply to the question'",
-            "'corrections' : 'correct the grmmaer and optimise sentense'",
-            "'rating' : 'rate the grammer for the User input which is given as input' ",
-            "generate the message and give the response in a json format using keywords ['reply' , 'corrections' , 'rating']"
+            "'reply' : 'Provide a simple and clear response to the user's question'",
+            "'corrections' : 'Correct the grammar and optimize the sentence for better clarity'",
+            "'rating' : 'Rate the grammar quality of the user input on a scale of 0 to 10, where 10 is perfect grammar and 0 is completely incorrect'",
+            "The response should always include a JSON object with the following keys: ['reply', 'corrections', 'rating']",
+            "Make sure to return the fields, even if the corrections or rating are not applicable. For example:",
+            "{ 'reply': 'This is a response.', 'corrections': 'No corrections needed.', 'rating': 1.0 }"
         ])
+
 
     def send(self, user_input: str, history: List[str]) -> dict:
         prompt = self.build_prompt(user_input, history)

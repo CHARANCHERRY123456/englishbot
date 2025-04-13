@@ -3,7 +3,6 @@ from typing import List, Optional
 from datetime import datetime
 
 class Correction(BaseModel):
-    original: str
     suggestion: str
 
 class MessageCreate(BaseModel):
@@ -17,9 +16,8 @@ class MessageOut(MessageCreate):
     id: str = Field(..., alias="_id")
     conversation_id: str
     timestamp: datetime
-    corrections: Optional[List[Correction]] = []
-    grammar_score: Optional[float]
-    rating: Optional[float]
+    corrections: str = "no correction is found"
+    grammar_score: Optional[float] = 0
 
 class ConversationCreate(BaseModel):
     participant_ids: List[str]

@@ -4,8 +4,10 @@ from fastapi import HTTPException
 from .schemas import *
 from conversations.model import MessageModel, ConversationModel
 from conversations.gemini_services import GeminiService
+import json
 from datetime import datetime
 from dotenv import load_dotenv
+import re
 load_dotenv()
 import os
 
@@ -25,6 +27,7 @@ class ConversationService:
 
     async def add_message(self, conv_id: str, msg: MessageCreate):
         try:
+            # 1. Get message history (last 5)
             history_cursor = self.messages.find(
                 {"conversation_id": conv_id},
                 sort=[("timestamp", -1)],
@@ -33,46 +36,53 @@ class ConversationService:
             history = [doc async for doc in history_cursor]
             history_texts = [m["content"] for m in reversed(history)]
 
-            ai_result = self.gemini.send(msg.content, history_texts)
-            print(ai_result)
-            import json
-            with open("response.json", "w") as f:
-                json.dump(ai_result, f, indent=4)
+            # 2. Send to Gemini
+            ai_result = self.gemini.send(msg.content, history_texts)  # add await if needed
+            ai_res = ai_result["reply"]
+
+            # 3. Clean and parse JSON
+            cleaned_res = re.sub(r"```json\n|```", "", ai_res)
+            ai_json = json.loads(cleaned_res)
+            print(type(ai_json), ai_json)
+
+            # 5. Create user message doc
             msg_doc = MessageModel(
                 **msg.dict(),
                 conversation_id=conv_id,
-                corrections=[{
-                    "original": msg.content,
-                    "suggestion": ai_result["reply"]
-                }],
-                grammar_score=ai_result["rating"],
-                rating=ai_result["rating"],
+                corrections=ai_json["corrections"],
+                grammar_score=ai_json["rating"],
             ).dict()
 
+
+            # 6. Insert user message
             insert = await self.messages.insert_one(msg_doc)
+
+            # 7. Update conversation's last message time
             await self.conversations.update_one(
                 {"_id": ObjectId(conv_id)},
                 {"$set": {"last_message_at": msg_doc["timestamp"]}}
             )
 
+            # 8. Insert bot reply
             bot_reply = MessageModel(
-                content=ai_result["reply"],
+                content=ai_json["reply"],
                 sender_id="bot",
                 conversation_id=conv_id
             ).dict()
 
             await self.messages.insert_one(bot_reply)
 
+            # 9. Return inserted message with ID
             msg_doc["_id"] = str(insert.inserted_id)
             return msg_doc
+
         except Exception as e:
             print(e)
-            raise HTTPException(status_code=400, detail="Invalid input data")
+            raise HTTPException(status_code=500, detail="Internal server error")
 
 
     async def get_conversation_history(self, conv_id: str, limit: int = 20, offset: int = 0):
         cursor = self.messages.find({"conversation_id": conv_id}).skip(offset).limit(limit).sort("timestamp", 1)
-        print(len(cursor))
         return [self._serialize(doc) async for doc in cursor]
 
     def _serialize(self, doc):

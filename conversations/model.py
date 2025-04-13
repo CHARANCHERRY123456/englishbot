@@ -10,9 +10,8 @@ class MessageModel(BaseModel):
     reply_to: Optional[str] = None
     message_type: str = "text"
     embedding: Optional[List[float]] = []
-    corrections: Optional[List[dict]] = []
+    corrections: str = "No corrections has available"
     grammar_score: Optional[float] = None
-    rating: Optional[float] = None
 
 class ConversationModel(BaseModel):
     participant_ids: List[str]

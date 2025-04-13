@@ -1,6 +1,0 @@
-{
-    "corrected": "-",
-    "suggestion": "-",
-    "rating": 0.0,
-    "reply": "```json\n{\n  \"reply\": \"String?  Could you tell me more?  I need some context to understand what you mean.  Are you talking about a piece of string, a sequence of characters, or something else?\",\n  \"corrections\": [\n    \"The word 'string' is grammatically correct but highly ambiguous.  It needs more context to be meaningful.  Consider adding descriptive words or a complete sentence to clarify your intent.\"\n  ],\n  \"grammar_score\": 2,\n  \"fluency\": 2, \n  \"ambiguity\": \"High\",\n  \"suggested_alternatives\": [\n    \"a string of lights\",\n    \"a guitar string\",\n    \"a string of characters (in programming)\",\n    \"to string beads together\",\n    \"a string quartet\"\n  ],\n  \"part_of_speech\": \"Ambiguous (noun, verb)\"\n}\n```\n"
-}

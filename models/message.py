@@ -12,3 +12,4 @@ class Message(BaseModel):
     timestamp: str
     correction: Optional[str] = None
     rating: Optional[int] = None
+

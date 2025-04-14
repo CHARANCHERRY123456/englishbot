@@ -1,6 +1,6 @@
 # db/mongo_database.py
 from typing import List, Dict, Optional
-from .mongo import conversations_collection
+from .db import conversations_collection
 from bson import ObjectId
 
 class MongoDatabase:

@@ -18,6 +18,7 @@ class MessageOut(MessageCreate):
     timestamp: datetime
     corrections: str = "no correction is found"
     grammar_score: Optional[float] = 0
+    reply:str="No reply found"
 
 class ConversationCreate(BaseModel):
     participant_ids: List[str]

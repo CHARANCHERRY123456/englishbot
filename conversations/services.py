@@ -37,7 +37,7 @@ class ConversationService:
             history_texts = [m["content"] for m in reversed(history)]
 
             # 2. Send to Gemini
-            ai_result = self.gemini.send(msg.content, history_texts)  # add await if needed
+            ai_result = self.gemini.send(msg.content, history_texts)  
             ai_res = ai_result["reply"]
 
             # 3. Clean and parse JSON
@@ -47,6 +47,7 @@ class ConversationService:
 
             # 5. Create user message doc
             msg_doc = MessageModel(
+                reply=ai_json["reply"],
                 **msg.dict(),
                 conversation_id=conv_id,
                 corrections=ai_json["corrections"],
@@ -88,3 +89,4 @@ class ConversationService:
     def _serialize(self, doc):
         doc["_id"] = str(doc["_id"])
         return doc
+        

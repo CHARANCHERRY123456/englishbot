@@ -6,7 +6,7 @@ from typing import List
 from models.conversation import Conversation
 from models.message import MessageCreate, Message
 from bson import ObjectId
-from database.mongo import get_db
+from database.db import get_db
 from services.chatbot_service import ChatbotService
 
 router = APIRouter()

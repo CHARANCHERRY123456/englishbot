@@ -5,7 +5,7 @@ from jose import jwt, JWTError
 from datetime import datetime, timedelta
 from motor.motor_asyncio import AsyncIOMotorCollection
 from bson import ObjectId
-from database.mongo import get_user_collection
+from database.db import get_user_collection
 import os
 import logging
 

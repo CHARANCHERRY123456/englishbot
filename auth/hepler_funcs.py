@@ -1,6 +1,7 @@
 # helping functions for routes
 from passlib.context import CryptContext
 from jose import jwt
+from logger import logger
 import os
 
 SECRET_KEY = os.getenv("SECRET_KEY" , "mysecretkey")
@@ -28,3 +29,11 @@ def create_access_token(data: dict):
     except Exception as e:
         print(f"JWT encoding error: {str(e)}")
         return None
+
+def decode_user(token:str):
+    try:
+        return jwt.decode(token, SECRET_KEY , algorithms=[ALGORITHM])
+    except Exception as e:
+        logger.error(f"JWT decoding error: {str(e)}")
+        return None
+        

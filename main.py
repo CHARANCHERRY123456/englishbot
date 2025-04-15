@@ -1,12 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import logging
+from logger import logger
 from dotenv import load_dotenv
 load_dotenv()
-from oorke import get_uri
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger.info("Starting FastAPI application...")
 
 app = FastAPI(
     title="English Learning Chatbot API",

@@ -16,7 +16,7 @@ def verify_password(plain_password, hashed_password):
         print(f"Password verification error: {str(e)}")
         return False
 
-def get_passowrd_hash(password):
+def get_password_hash(password):
     try:
         return pwd_context.hash(password)
     except Exception as e:
@@ -30,9 +30,10 @@ def create_access_token(data: dict):
         print(f"JWT encoding error: {str(e)}")
         return None
 
-def decode_user(token:str):
+def decode_access_token(token:str):
     try:
-        return jwt.decode(token, SECRET_KEY , algorithms=[ALGORITHM])
+        user = jwt.decode(token, SECRET_KEY , algorithms=[ALGORITHM])
+        return user
     except Exception as e:
         logger.error(f"JWT decoding error: {str(e)}")
         return None

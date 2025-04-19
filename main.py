@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from logger import logger
 from auth.routes import router as auth_router
 from conversation.routes import router as conversation_router
+from message.routers import router as message_router
 
 logger.info("Starting FastAPI application...")
 
@@ -22,6 +23,7 @@ app.add_middleware(
 
 app.include_router(router=auth_router,prefix="/auth",tags=["auth"])
 app.include_router(router=conversation_router,prefix="/conversation",tags=["conversation"])
+app.include_router(router=message_router , prefix="/message" , tags=["message"])
 
 @app.get("/")
 def root():

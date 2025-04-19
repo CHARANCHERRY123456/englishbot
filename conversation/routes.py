@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
-from conversation.schemas import ConversationCreate, ConversationOut, MessageCreate, MessageOut
+from conversation.schemas import ConversationCreate, ConversationOut
 from conversation.services import ConversationService, get_conversation_service
 
 router = APIRouter()
@@ -21,33 +21,30 @@ async def create_conversation(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-@router.post("/{conversation_id}/messages", response_model=MessageOut)
-async def send_message(
-    conversation_id: str,
-    msg: MessageCreate,
+@router.get("/{user_id}", response_model=List[ConversationOut])
+async def get_user_conversations(
+    user_id: str,
     service: ConversationService = Depends(get_conversation_service)
 ):
     """
-    Send a message to a conversation
+    Get all conversations of a user by user ID
     """
     try:
-        return await service.add_message(conversation_id, msg)
+        print(f"Fetching conversations for user ID: {user_id}")
+        return await service.get_conversations_by_user(user_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-@router.get("/{conversation_id}/history", response_model=List[MessageOut])
-async def get_history(
+@router.delete("/{conversation_id}")
+async def delete_conversation(
     conversation_id: str,
-    limit: int = 20,
-    offset: int = 0,
     service: ConversationService = Depends(get_conversation_service)
 ):
     """
-    Get conversation history
+    Delete a conversation by ID
     """
     try:
-        return await service.get_conversation_history(conversation_id, limit, offset)
+        print(f"Deleting conversation with ID: {conversation_id}")
+        return await service.delete_conversation(conversation_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

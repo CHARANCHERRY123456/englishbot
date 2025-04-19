@@ -14,7 +14,10 @@ async def create_conversation(
     Create a new conversation
     """
     try:
-        return await service.create_conversation(data)
+        print("Creating conversation with data:", data)
+        conversation =  await service.create_conversation(data)
+        print(conversation)
+        return conversation
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

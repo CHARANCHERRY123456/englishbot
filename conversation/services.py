@@ -1,84 +1,59 @@
-import os
-import pickle
-from datetime import datetime
 from typing import List
+from motor.motor_asyncio import AsyncIOMotorClient
+from bson import ObjectId
+from fastapi import Depends
+from datetime import datetime
 
-from conversation.schemas import ConversationCreate, MessageCreate, ConversationOut, MessageOut
-from conversation.models import ConversationModel as Conversation, MessageModel as Message
-from google.generativeai import GenerativeModel, configure
-
-# 🌐 Gemini Configuration
-configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = GenerativeModel("gemini-1.5-flash")
-
-# Path helper
-def get_pickle_path(convo_id: str) -> str:
-    return f"chat_history/{convo_id}.pkl"
+from conversation.schemas import (
+    ConversationCreate, ConversationOut,
+    MessageCreate, MessageOut
+)
+from database.db import get_db , get_conversation_collection , get_message_collection
 
 class ConversationService:
-    def __init__(self):
-        os.makedirs("chat_history", exist_ok=True)
-        # Simulated storage for now (replace with DB if needed)
-        self.conversations = {}
-        self.messages = {}
-
-    def load_history(self, conversation_id: str):
-        path = get_pickle_path(conversation_id)
-        if os.path.exists(path):
-            with open(path, "rb") as f:
-                return pickle.load(f)
-        return []
-
-    def save_history(self, conversation_id: str, history):
-        path = get_pickle_path(conversation_id)
-        with open(path, "wb") as f:
-            pickle.dump(history, f)
+    def __init__(self, db):
+        self.db = get_db()
+        self.conversations = get_conversation_collection()
+        self.messages = get_message_collection()
 
     async def create_conversation(self, data: ConversationCreate) -> ConversationOut:
-        convo_id = f"convo_{len(self.conversations)+1}"
-        convo = ConversationModel(
-            title=data.title or "Untitled",
-            description=data.description,
-            image=data.image,
-            user_id=data.user_id,
-            created_at=datetime.utcnow()
-        )
-        self.conversations[convo_id] = convo
-        return ConversationOut(id=convo_id, **convo.dict())
+        conversation_dict = data.dict()
+        conversation_dict["created_at"] = datetime.utcnow()
+        conversation_dict["last_message_at"] = None
+
+        result = await self.conversations.insert_one(conversation_dict)
+        conversation_dict["_id"] = str(result.inserted_id)
+        return ConversationOut(**conversation_dict)
 
     async def add_message(self, conversation_id: str, msg: MessageCreate) -> MessageOut:
-        # Save user message
-        user_msg = MessageModel(
-            content=msg.content,
-            sender_id=msg.sender_id,
-            conversation_id=conversation_id,
-            timestamp=datetime.utcnow()
+        message_data = msg.dict()
+        message_data["conversation_id"] = conversation_id
+        message_data["timestamp"] = datetime.utcnow()
+
+        result = await self.messages.insert_one(message_data)
+
+        # Update last_message_at in conversation
+        await self.conversations.update_one(
+            {"_id": ObjectId(conversation_id)},
+            {"$set": {"last_message_at": message_data["timestamp"]}}
         )
-        self.messages.setdefault(conversation_id, []).append(user_msg)
 
-        # Chat logic
-        history = self.load_history(conversation_id)
-        chat = model.start_chat(history=history)
-        response = chat.send_message(msg.content).text
-        self.save_history(conversation_id, chat.history)
+        message_data["_id"] = str(result.inserted_id)
+        return MessageOut(**message_data)
 
-        # Save Gemini response
-        assistant_msg = MessageModel(
-            content=response,
-            sender_id="ai",
-            conversation_id=conversation_id,
-            timestamp=datetime.utcnow()
-        )
-        self.messages[conversation_id].append(assistant_msg)
+    async def get_conversation_history(
+        self,
+        conversation_id: str,
+        limit: int = 20,
+        offset: int = 0
+    ) -> List[MessageOut]:
+        cursor = self.messages.find({"conversation_id": conversation_id}).sort("timestamp", -1).skip(offset).limit(limit)
+        messages = await cursor.to_list(length=limit)
 
-        return MessageOut(**assistant_msg.dict())
+        for message in messages:
+            message["_id"] = str(message["_id"])
+        return [MessageOut(**msg) for msg in messages]
 
-    async def get_conversation_history(self, conversation_id: str, limit: int = 20, offset: int = 0) -> List[MessageOut]:
-        msgs = self.messages.get(conversation_id, [])[offset:offset+limit]
-        return [MessageOut(**msg.dict()) for msg in msgs]
-
-# Singleton instance + DI
-conversation_service_instance = ConversationService()
-
-def get_conversation_service():
-    return conversation_service_instance
+# Dependency
+def get_conversation_service(db=Depends(get_db)) -> ConversationService:
+    return ConversationService(db)

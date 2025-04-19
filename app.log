@@ -1,36 +1,141 @@
-2025-04-15 15:56:19,276 - INFO - Starting FastAPI application...
-2025-04-15 17:03:36,382 - INFO - Starting FastAPI application...
-2025-04-15 17:04:01,443 - ERROR - Signup failed
+2025-04-19 14:55:56,726 - INFO - Starting FastAPI application...
+2025-04-19 14:56:01,360 - INFO - Starting FastAPI application...
+2025-04-19 14:59:28,294 - INFO - Starting FastAPI application...
+2025-04-19 15:00:49,578 - INFO - Starting FastAPI application...
+2025-04-19 15:01:41,307 - INFO - Starting FastAPI application...
+2025-04-19 15:01:43,983 - INFO - Starting FastAPI application...
+2025-04-19 15:01:51,499 - INFO - Starting FastAPI application...
+2025-04-19 15:07:54,136 - INFO - Starting FastAPI application...
+2025-04-19 15:07:58,345 - INFO - Starting FastAPI application...
+2025-04-19 15:09:41,140 - INFO - Starting FastAPI application...
+2025-04-19 15:10:16,778 - INFO - Starting FastAPI application...
+2025-04-19 15:12:59,828 - INFO - Starting FastAPI application...
+2025-04-19 15:16:33,181 - INFO - Starting FastAPI application...
+2025-04-19 15:16:36,905 - ERROR - Get user failed
 Traceback (most recent call last):
-  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/routes.py", line 11, in signup
-    return await signup_user(user)
-  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/services.py", line 17, in signup_user
-    "username": user.username
-  File "/home/rgukt123/.local/lib/python3.10/site-packages/pydantic/main.py", line 856, in __getattr__
-    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
-AttributeError: 'UserSignin' object has no attribute 'username'
-2025-04-15 17:04:55,642 - INFO - Starting FastAPI application...
-2025-04-15 17:05:59,377 - INFO - Starting FastAPI application...
-2025-04-15 17:07:00,763 - INFO - Starting FastAPI application...
-2025-04-15 17:07:39,199 - INFO - Starting FastAPI application...
-2025-04-15 17:08:12,734 - INFO - Starting FastAPI application...
-2025-04-15 17:54:44,137 - INFO - Starting FastAPI application...
-2025-04-15 17:56:56,349 - INFO - Starting FastAPI application...
-2025-04-15 17:58:20,010 - INFO - Starting FastAPI application...
-2025-04-15 17:58:39,891 - INFO - Starting FastAPI application...
-2025-04-15 17:59:51,610 - INFO - Starting FastAPI application...
-2025-04-15 18:00:04,473 - INFO - Starting FastAPI application...
-2025-04-15 18:00:40,320 - INFO - Starting FastAPI application...
-2025-04-15 18:01:34,578 - INFO - Starting FastAPI application...
-2025-04-15 18:01:35,985 - INFO - Starting FastAPI application...
-2025-04-15 18:02:04,067 - INFO - Starting FastAPI application...
-2025-04-15 18:03:09,443 - INFO - Starting FastAPI application...
-2025-04-15 18:03:15,817 - INFO - Starting FastAPI application...
-2025-04-15 18:03:36,512 - INFO - Starting FastAPI application...
-2025-04-15 18:08:34,128 - INFO - Starting FastAPI application...
-2025-04-15 18:10:51,403 - INFO - Starting FastAPI application...
-2025-04-15 18:12:55,636 - INFO - Starting FastAPI application...
-2025-04-15 18:13:44,368 - INFO - Starting FastAPI application...
-2025-04-15 18:21:40,735 - INFO - Starting FastAPI application...
-2025-04-15 18:32:22,291 - INFO - Starting FastAPI application...
-2025-04-15 18:32:30,328 - INFO - Starting FastAPI application...
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/routes.py", line 32, in get_user
+    return await get_current_user(token)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/services.py", line 48, in get_current_user
+    return GetUser(**user)
+  File "/home/rgukt123/.local/lib/python3.10/site-packages/pydantic/main.py", line 212, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+2025-04-19 15:18:54,207 - INFO - Starting FastAPI application...
+2025-04-19 15:18:56,713 - INFO - Starting FastAPI application...
+2025-04-19 15:18:58,407 - ERROR - 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Traceback (most recent call last):
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/routes.py", line 32, in get_user
+    return await get_current_user(token)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/services.py", line 48, in get_current_user
+    return GetUser(**user)
+  File "/home/rgukt123/.local/lib/python3.10/site-packages/pydantic/main.py", line 212, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+2025-04-19 15:19:06,737 - ERROR - 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Traceback (most recent call last):
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/routes.py", line 32, in get_user
+    return await get_current_user(token)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/services.py", line 48, in get_current_user
+    return GetUser(**user)
+  File "/home/rgukt123/.local/lib/python3.10/site-packages/pydantic/main.py", line 212, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+2025-04-19 15:19:07,870 - ERROR - 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Traceback (most recent call last):
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/routes.py", line 32, in get_user
+    return await get_current_user(token)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/services.py", line 48, in get_current_user
+    return GetUser(**user)
+  File "/home/rgukt123/.local/lib/python3.10/site-packages/pydantic/main.py", line 212, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+2025-04-19 15:19:32,020 - INFO - Starting FastAPI application...
+2025-04-19 15:19:34,229 - ERROR - 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Traceback (most recent call last):
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/routes.py", line 32, in get_user
+    return await get_current_user(token)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/services.py", line 48, in get_current_user
+    return GetUser(**user)
+  File "/home/rgukt123/.local/lib/python3.10/site-packages/pydantic/main.py", line 212, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+2025-04-19 15:26:51,598 - INFO - Starting FastAPI application...
+2025-04-19 15:26:57,737 - INFO - Starting FastAPI application...
+2025-04-19 15:27:01,390 - INFO - Starting FastAPI application...
+2025-04-19 15:28:24,977 - ERROR - 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Traceback (most recent call last):
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/routes.py", line 32, in get_user
+    return await get_current_user(token)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/services.py", line 49, in get_current_user
+    return GetUser(**user)
+  File "/home/rgukt123/.local/lib/python3.10/site-packages/pydantic/main.py", line 212, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+2025-04-19 15:32:55,368 - INFO - Starting FastAPI application...
+2025-04-19 15:33:05,455 - INFO - Starting FastAPI application...
+2025-04-19 15:33:11,749 - ERROR - 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Traceback (most recent call last):
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/routes.py", line 32, in get_user
+    return await get_current_user(token)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/services.py", line 50, in get_current_user
+    return GetUser(**user)
+  File "/home/rgukt123/.local/lib/python3.10/site-packages/pydantic/main.py", line 212, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+2025-04-19 15:33:31,065 - INFO - Starting FastAPI application...
+2025-04-19 15:33:34,245 - ERROR - 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Traceback (most recent call last):
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/routes.py", line 33, in get_user
+    return await get_current_user(token)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/services.py", line 50, in get_current_user
+    return GetUser(**user)
+  File "/home/rgukt123/.local/lib/python3.10/site-packages/pydantic/main.py", line 212, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for GetUser
+id
+  Field required [type=missing, input_value={'sub': '680364934a8038e0...', 'username': 'string'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+2025-04-19 15:39:43,136 - INFO - Starting FastAPI application...
+2025-04-19 15:50:50,426 - INFO - Starting FastAPI application...

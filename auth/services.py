@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from auth.schemas import UserLogin, UserBase, UserSignin, Token
+from auth.schemas import UserLogin, GetUser, UserSignin, Token
 from auth.utils import verify_password, decode_access_token, get_password_hash, create_access_token
 from database.db import get_user_collection
 
@@ -22,7 +22,7 @@ async def signup_user(user: UserSignin) -> Token:
     })
     user_id = str(result.inserted_id)
     token = create_access_token({
-        "userid": user_id,
+        "id": user_id,
         "email": user.email,
         "username": user.username
     })
@@ -35,14 +35,16 @@ async def login_user(user: UserLogin) -> Token:
     
     user_id = str(db_user["_id"])
     token = create_access_token({
-        "sub": user_id,
+        "id": user_id,
         "email": user.email,
         "username": db_user.get("username", "")
     })
     return {"access_token": token, "token_type": "bearer"}
 
-async def get_current_user(token: Token) -> UserBase:
+async def get_current_user(token: str) -> GetUser:
+    print(token)
     user = decode_access_token(token)
+    print("user is ", user)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
-    return UserBase(**user)
+    return GetUser(**user)

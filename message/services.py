@@ -1,9 +1,6 @@
 from typing import List
-from fastapi import Depends
-from bson import ObjectId
-from datetime import datetime
-
 from message.schemas import MessageCreate , MessageOut
+from message.utils import add_message_to_db, get_answer_using_gemini
 from database.db import get_message_collection,get_conversation_collection,get_db
 from fastapi import HTTPException
 
@@ -14,23 +11,37 @@ class MessageService:
         self.conversations = get_conversation_collection()
     async def add_message(self, conversation_id: str, msg: MessageCreate) -> MessageOut:
         try:
-            message_data = msg.dict()
-            message_data["conversation_id"] = conversation_id
-            message_data["timestamp"] = datetime.utcnow()
-            print(message_data)
-            result = await self.messages.insert_one(message_data)
+            # 1. Save user message to DB
+            user_message_data = await add_message_to_db(conversation_id, msg)
+            if not user_message_data:
+                raise HTTPException(status_code=500, detail="Failed to add message to the database")
 
-            # Update last_message_at in conversation
-            await self.conversations.update_one(
-            {"_id": ObjectId(conversation_id)},
-            {"$set": {"last_message_at": message_data["timestamp"]}}
+            # 2. Get Gemini response
+            response = await get_answer_using_gemini(msg.content)
+
+            # 3. Prepare reply message
+            reply_msg = MessageCreate(
+                content=response["reply"],
+                sender_id="bot",
+                conversation_id=conversation_id,
+                reply_to=user_message_data.get("_id")
             )
+            bot_reply_data = await add_message_to_db(conversation_id, reply_msg)
+            if not bot_reply_data:
+                raise HTTPException(status_code=500, detail="Failed to add reply message to the database")
+            
+            bot_reply_data["corrections"] = response["corrections"]
+            bot_reply_data["content"] = response["content"]
+            bot_reply_data["grammar_score"] = response["grammar_score"]
 
-            message_data["_id"] = str(result.inserted_id)
-            return MessageOut(**message_data)
+
+            # 4. Return the bot’s message
+            return MessageOut(**bot_reply_data)
+
         except Exception as e:
-            print(f"An error occurred while adding the message: {e}")
-            raise HTTPException(status_code=500, detail=f"An error occurred while adding the message: {e}")
+            print(f"Error in add_message: {e}")
+            raise HTTPException(status_code=500, detail=f"Server error: {e}")
+
 
     async def get_conversation_history(
         self,

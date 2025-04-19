@@ -6,6 +6,8 @@ from datetime import datetime
 class MessageCreate(BaseModel):
     content : str
     sender_id : str
+
+
     message_type : str = "text"
     embedding : Optional[List[float]] = None
     reply_to : Optional[str] = None
@@ -15,6 +17,8 @@ class MessageOut(MessageCreate):
     id : str = Field(..., alias="_id")
     conversation_id : str
     timestamp : datetime
+
+    
     corrections : str = "no correction is found"
     content : str = "No reply found"
     grammar_score : Optional[float] = 0.0

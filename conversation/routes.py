@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from conversation.schemas import ConversationCreate, ConversationOut
 from conversation.services import ConversationService, get_conversation_service
+from auth.dependencies import get_current_user
 
 router = APIRouter()
 

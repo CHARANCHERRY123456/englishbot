@@ -1,8 +1,10 @@
 # helping functions for routes
 from passlib.context import CryptContext
+from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from logger import logger
 import os
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 SECRET_KEY = os.getenv("SECRET_KEY" , "mysecretkey")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")

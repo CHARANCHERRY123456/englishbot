@@ -10,6 +10,12 @@ _models
 _routes
 
 _services
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+
 
 .idea
 .ipynb_checkpoints
@@ -39,4 +45,5 @@ archive.zip
 .cache
 
 # macOS
-.DS_Store
+.DS_Store.venv/
+venv/

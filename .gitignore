@@ -2,6 +2,14 @@ geminiBro
 .env
 temp.txt
 
+# temporary files that needed in local but not in the repo
+_check
+_conversations
+_geminiBro
+_models
+_routes
+
+_services
 
 .idea
 .ipynb_checkpoints

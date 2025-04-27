@@ -234,3 +234,51 @@ fastapi.exceptions.HTTPException: 401: Invalid token
 2025-04-25 22:11:37,229 - INFO - Starting FastAPI application...
 2025-04-25 23:04:21,541 - INFO - Starting FastAPI application...
 2025-04-27 20:49:18,209 - INFO - Starting FastAPI application...
+2025-04-27 20:56:45,090 - INFO - Starting FastAPI application...
+2025-04-27 21:41:31,994 - INFO - Starting FastAPI application...
+2025-04-27 21:43:33,745 - ERROR - Login failed
+Traceback (most recent call last):
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/routes.py", line 22, in login
+    return await login_user(user)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/auth/services.py", line 32, in login_user
+    db_user = await users.find_one({"email": user.email})
+  File "/usr/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/collection.py", line 1755, in find_one
+    for result in cursor.limit(-1):
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/cursor.py", line 1284, in __next__
+    return self.next()
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/cursor.py", line 1260, in next
+    if len(self._data) or self._refresh():
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/cursor.py", line 1208, in _refresh
+    self._send_message(q)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/cursor.py", line 1102, in _send_message
+    response = client._run_operation(
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/_csot.py", line 119, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/mongo_client.py", line 1896, in _run_operation
+    return self._retryable_read(
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/mongo_client.py", line 2005, in _retryable_read
+    return self._retry_internal(
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/_csot.py", line 119, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/mongo_client.py", line 1972, in _retry_internal
+    ).run()
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/mongo_client.py", line 2709, in run
+    return self._read() if self._is_read else self._write()
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/mongo_client.py", line 2854, in _read
+    self._server = self._get_server()
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/mongo_client.py", line 2802, in _get_server
+    return self._client._select_server(
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/mongo_client.py", line 1778, in _select_server
+    topology = self._get_topology()
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/mongo_client.py", line 1716, in _get_topology
+    self._resolve_srv()
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/mongo_client.py", line 903, in _resolve_srv
+    res = uri_parser._parse_srv(
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/uri_parser.py", line 164, in _parse_srv
+    dns_options = dns_resolver.get_options()
+  File "/home/rgukt123/programs/python aiml/linguabot-backend/venv/lib/python3.10/site-packages/pymongo/synchronous/srv_resolver.py", line 109, in get_options
+    raise ConfigurationError(str(exc)) from None
+pymongo.errors.ConfigurationError: The resolution lifetime expired after 21.125 seconds: Server Do53:127.0.0.53@53 answered The DNS operation timed out.; Server Do53:127.0.0.53@53 answered The DNS operation timed out.; Server Do53:127.0.0.53@53 answered The DNS operation timed out.; Server Do53:127.0.0.53@53 answered The DNS operation timed out.; Server Do53:127.0.0.53@53 answered The DNS operation timed out.; Server Do53:127.0.0.53@53 answered The DNS operation timed out.; Server Do53:127.0.0.53@53 answered The DNS operation timed out.
+2025-04-27 21:54:00,211 - INFO - Starting FastAPI application...

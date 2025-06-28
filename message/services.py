@@ -1,6 +1,7 @@
 from typing import List
 from message.schemas import MessageCreate , MessageOut
 from message.utils import add_message_to_db, get_answer_using_gemini,get_conversation_history_for_gemini
+from message.t5utils import get_answer_using_t5
 from database.db import get_message_collection,get_conversation_collection,get_db
 from fastapi import HTTPException
 
@@ -38,6 +39,9 @@ class MessageService:
                 raise HTTPException(status_code=500, detail="Invalid response format from Gemini")
             print(f"Received Gemini response: {response}")
 
+            # get anohter model to correct grammer 
+            response_t5 = await get_answer_using_t5(msg.content)
+
             # 4. Prepare reply message
             print("Preparing bot reply message")
             reply_msg = MessageCreate(
@@ -53,7 +57,8 @@ class MessageService:
                 raise HTTPException(status_code=500, detail="Failed to add reply message to the database")
             print(f"Bot reply message saved successfully: {bot_reply_data}")
 
-            bot_reply_data["corrections"] = response["corrections"]
+
+            bot_reply_data["corrections"] = response_t5  #response["corrections"]
             bot_reply_data["content"] = response["reply"]
             bot_reply_data["grammar_score"] = response["rating"]
 

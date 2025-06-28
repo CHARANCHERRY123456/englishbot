@@ -94,18 +94,25 @@ This is the backend for the Linguabot conversational AI application. It provides
     ```json
     {
       "content": "Hello, AI!",
-      "sender_id": "user"
+      "sender_id": "user",
+      "message_type": "text",           // optional, defaults to "text"
+      "embedding": [0.1, 0.2],          // optional, can be omitted
+      "reply_to": "message_id"          // optional, can be omitted
     }
     ```
 - **Output**:
   ```json
   {
-    "id": "680458b3324cd9ea63434146",
-    "content": "Hello, AI!",
-    "sender_id": "user",
-    "conversation_id": "680458b3324cd9ea63434145",
-    "timestamp": "2025-04-25T12:30:00Z",
-    "reply_to": null
+    "_id": "string",
+    "content": "string",
+    "sender_id": "string",
+    "message_type": "text",
+    "embedding": [0.1, 0.2],
+    "reply_to": "message_id",
+    "conversation_id": "string",
+    "timestamp": "2025-06-28T12:00:00",
+    "corrections": "string",
+    "grammar_score": 0.0
   }
   ```
 
@@ -121,20 +128,16 @@ This is the backend for the Linguabot conversational AI application. It provides
   ```json
   [
     {
-      "id": "680458b3324cd9ea63434146",
-      "content": "Hello, AI!",
-      "sender_id": "user",
-      "conversation_id": "680458b3324cd9ea63434145",
-      "timestamp": "2025-04-25T12:30:00Z",
-      "reply_to": null
-    },
-    {
-      "id": "680458b3324cd9ea63434147",
-      "content": "Hello! How can I assist you today?",
-      "sender_id": "bot",
-      "conversation_id": "680458b3324cd9ea63434145",
-      "timestamp": "2025-04-25T12:30:05Z",
-      "reply_to": "680458b3324cd9ea63434146"
+      "_id": "string",
+      "content": "string",
+      "sender_id": "string",
+      "message_type": "text",
+      "embedding": [0.1, 0.2],
+      "reply_to": "message_id",
+      "conversation_id": "string",
+      "timestamp": "2025-06-28T12:00:00",
+      "corrections": "string",
+      "grammar_score": 0.0
     }
   ]
   ```

@@ -195,6 +195,8 @@ Authorization: Bearer <your_token>
    git clone https://github.com/your-username/linguabot-backend.git
    cd linguabot-backend
    ```
+  for window activation
+   venv\Scripts\Activate.ps1
 
 2. Install dependencies:
    ```bash

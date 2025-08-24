@@ -11,6 +11,7 @@ class MessageCreate(BaseModel):
     message_type : str = "text"
     embedding : Optional[List[float]] = None
     reply_to : Optional[str] = None
+    corrections : Optional[str] = "Seems you are pro at english"
 
 # sending bot reply to sender
 class MessageOut(MessageCreate):

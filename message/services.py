@@ -10,25 +10,17 @@ class MessageService:
         self.messages= get_message_collection()
         self.conversations = get_conversation_collection()
     async def add_message(self, conversation_id: str, msg: MessageCreate) -> MessageOut:
-        print(f"Starting to add message to conversation {conversation_id}")
         try:
             # 1. Save user message to DB
-            print(f"Attempting to save user message: {msg}")
             user_message_data = await add_message_to_db(conversation_id, msg)
             if not user_message_data:
                 print("Failed to add user message to the database")
                 raise HTTPException(status_code=500, detail="Failed to add message to the database")
-            print(f"User message saved successfully: {user_message_data}")
             # 2. Get conversation history
-            print(f"Fetching conversation history for conversation ID: {conversation_id}")
             conversation_history = await get_conversation_history_for_gemini(conversation_id)
             if not conversation_history:
-                print("No conversation history found")
                 raise HTTPException(status_code=404, detail="Conversation history not found")
-            print(f"Conversation history fetched successfully: {conversation_history}")
 
-            # 3. Get Gemini response
-            print(f"Fetching Gemini response for message content: {msg.content}")
             response = await get_answer_using_gemini(msg.content, history=conversation_history)
             if not response:
                 print("No response received from Gemini")
@@ -39,14 +31,13 @@ class MessageService:
             print(f"Received Gemini response: {response}")
 
             # 4. Prepare reply message
-            print("Preparing bot reply message")
             reply_msg = MessageCreate(
                 content=response["reply"],
                 sender_id="bot",
                 conversation_id=conversation_id,
-                reply_to=user_message_data.get("_id")
+                reply_to=user_message_data.get("_id"),
+                corrections=response.get("corrections","Sorry i don't find any correction")
             )
-            print(f"Attempting to save bot reply message: {reply_msg}")
             bot_reply_data = await add_message_to_db(conversation_id, reply_msg)
             if not bot_reply_data:
                 print("Failed to add bot reply message to the database")

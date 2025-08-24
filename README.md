@@ -215,6 +215,12 @@ Authorization: Bearer <your_token>
    uvicorn main:app --reload
    ```
 
+   for windows 
+
+   ```bash
+   python -m uvicorn main:app --reload
+   ```
+
 5. Access the API documentation:
    - Open your browser and go to `http://127.0.0.1:8000/docs`.
 
